@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f6f2e7">
+<title>艾言 - 艾言艾语</title>
+<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect x="6" y="6" width="52" height="52" rx="8" fill="%23c14b34" transform="rotate(-4 32 32)"/><text x="32" y="44" font-size="34" fill="%23fffdf6" text-anchor="middle" font-family="serif" font-weight="700">留</text></svg>'>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f6f2e7; --card:#fffdf6;
+    --ink:#27302a; --ink-soft:#66705f; --faint:#9aa18d;
+    --accent:#c14b34; --accent-deep:#a13a27;
+    --line:#e5dcc6; --line-strong:#d2c7a6;
+    --shadow:0 1px 2px rgba(63,54,35,.07), 0 6px 18px rgba(63,54,35,.10);
+    --sans:"Noto Sans SC",-apple-system,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+    --serif:"Noto Serif SC","Songti SC","STSong",serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+  body{font-family:var(--sans);font-size:16px;background:var(--paper);color:var(--ink);min-height:100vh;overflow-x:hidden;line-height:1.75}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background-image:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><rect width="160" height="160" filter="url(%23n)" opacity="0.05"/></svg>');mix-blend-mode:multiply}
+  body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(620px 420px at 12% 8%, rgba(193,75,52,.055), transparent 62%),radial-gradient(760px 540px at 90% 96%, rgba(95,143,99,.075), transparent 62%)}
+  .page{position:relative;z-index:1}
+
+  .side-mark{position:fixed;right:16px;top:50%;transform:translateY(-50%);writing-mode:vertical-rl;letter-spacing:10px;font-family:var(--serif);font-size:17px;color:rgba(39,48,42,.13);pointer-events:none;z-index:0;user-select:none}
+  @media (max-width:1280px){.side-mark{display:none}}
+
+  /* ============ 首屏：居中书写区 ============ */
+  .hero{position:relative;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:56px 22px 44px;text-align:center;overflow:hidden}
+  .hero .ghost-seal{position:absolute;left:50%;top:50%;transform:translate(-50%,-52%) rotate(-7deg);font-family:var(--serif);font-weight:900;font-size:min(46vw,380px);color:rgba(39,48,42,.035);line-height:1;user-select:none;pointer-events:none}
+  .brand{position:relative;display:flex;flex-direction:column;align-items:center;gap:18px;margin-bottom:34px}
+  .seal{width:66px;height:66px;background:var(--accent);color:#fffdf6;border-radius:11px;display:grid;place-items:center;font-family:var(--serif);font-size:38px;font-weight:900;transform:rotate(-4deg);box-shadow:0 4px 12px rgba(161,58,39,.32);position:relative;user-select:none}
+  .seal::after{content:"";position:absolute;inset:5px;border:1.5px solid rgba(255,253,246,.72);border-radius:7px}
+  .title h1{font-family:var(--serif);font-size:40px;font-weight:900;letter-spacing:12px;line-height:1.15;text-indent:12px}
+  .title h1 em{font-style:normal;color:var(--accent)}
+  .title .sub{margin-top:9px;font-size:13.5px;color:var(--ink-soft);letter-spacing:3px}
+
+  .composer{position:relative;width:100%;max-width:640px;background:var(--card);border:1px solid #ebe2ca;border-radius:14px;box-shadow:0 1px 2px rgba(63,54,35,.07), 0 14px 34px rgba(63,54,35,.13);padding:28px 30px 24px;text-align:left}
+  .composer::before{content:"";position:absolute;top:-11px;left:50%;width:110px;height:26px;transform:translateX(-50%) rotate(-2deg);background:rgba(233,227,207,.8);box-shadow:inset 0 0 6px rgba(255,255,255,.65),0 1px 3px rgba(63,54,35,.13);clip-path:polygon(2% 0,98% 5%,100% 100%,0 95%)}
+  .composer-label{font-size:12px;letter-spacing:6px;color:var(--ink-soft);font-weight:500;display:flex;align-items:center;gap:12px;margin-bottom:18px}
+  .composer-label::after{content:"";flex:1;height:1px;background:var(--line)}
+  .field-name{position:relative;margin-bottom:16px}
+  .field-name label,.field-text label{position:absolute;font-size:11.5px;color:var(--faint);letter-spacing:2px;pointer-events:none;font-weight:500}
+  .field-name label{top:11px;left:13px}
+  .field-text label{top:11px;left:17px}
+  #nameInput{width:100%;font-family:var(--sans);font-size:16px;color:var(--ink);background:transparent;border:none;border-bottom:1px solid #d9cfb4;padding:28px 5px 7px;outline:none;transition:border-color .2s;border-radius:0}
+  #nameInput:focus{border-bottom-color:var(--accent)}
+  .field-text{position:relative;border:1px solid #e8dfc7;border-radius:9px;padding:0 12px;transition:border-color .2s,box-shadow .2s}
+  .field-text:focus-within{border-color:#c7b88c;box-shadow:0 0 0 3px rgba(199,184,140,.18)}
+  #textInput{width:100%;min-height:150px;resize:vertical;font-family:var(--sans);font-size:16px;color:var(--ink);line-height:32px;border:none;outline:none;background-color:transparent;background-image:repeating-linear-gradient(to bottom,transparent 0 31px,var(--line) 31px 32px);background-attachment:local;padding:30px 6px 6px}
+  .composer-foot{display:flex;align-items:center;justify-content:space-between;margin-top:16px;gap:12px;flex-wrap:wrap}
+  .count{font-size:12.5px;color:var(--ink-soft);letter-spacing:1px;font-variant-numeric:tabular-nums}
+  .count.warn{color:var(--accent);font-weight:700}
+  .submit-btn{font-family:var(--sans);font-size:15px;font-weight:700;letter-spacing:6px;color:#fffdf6;background:var(--accent);border:none;border-radius:9px;padding:13px 30px 13px 36px;cursor:pointer;box-shadow:0 4px 12px rgba(161,58,39,.26);transition:all .18s ease;display:inline-flex;align-items:center;gap:10px}
+  .submit-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .submit-btn:hover:not(:disabled){background:var(--accent-deep);transform:translateY(-1px);box-shadow:0 6px 16px rgba(161,58,39,.32)}
+  .submit-btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
+  .shake{animation:shake .4s}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-3px)}}
+
+  .hero-stat{position:relative;margin-top:26px;font-size:12.5px;letter-spacing:2px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+  .hero-stat i{font-style:normal;color:var(--accent);font-weight:700;font-size:14px}
+  .down-hint{position:relative;margin-top:30px;display:inline-flex;flex-direction:column;align-items:center;gap:5px;font-family:var(--sans);font-size:12px;letter-spacing:4px;color:var(--ink-soft);background:none;border:none;cursor:pointer;transition:color .2s;padding:6px 10px}
+  .down-hint:hover{color:var(--accent)}
+  .down-hint svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;animation:bob 1.9s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0);opacity:.55}50%{transform:translateY(6px);opacity:1}}
+
+  /* ============ 留言墙 ============ */
+  .wall-wrap{max-width:1180px;margin:0 auto;padding:26px 26px 60px;scroll-margin-top:20px}
+  .wall{columns:3;column-gap:24px}
+  .wall-sec-title{column-span:all;display:flex;align-items:center;gap:14px;font-size:12px;letter-spacing:6px;color:var(--ink-soft);font-weight:500;margin:0 0 24px}
+  .wall-sec-title::after{content:"";flex:1;height:1px;background:var(--line)}
+  .note{break-inside:avoid;position:relative;--tilt:var(--tilt-raw,0deg);background:var(--card);border:1px solid #ebe2ca;border-radius:4px;box-shadow:var(--shadow);padding:25px 20px 15px;margin:0 0 24px;transform:rotate(var(--tilt));transition:transform .25s ease,box-shadow .25s ease,opacity .25s ease}
+  .note:hover{transform:rotate(0deg) translateY(-3px);box-shadow:0 1px 2px rgba(63,54,35,.07),0 14px 30px rgba(63,54,35,.14);z-index:2}
+  .note::before{content:"";position:absolute;top:-10px;left:50%;width:76px;height:22px;transform:translateX(-50%) rotate(-3deg);background:rgba(233,227,207,.75);box-shadow:inset 0 0 5px rgba(255,255,255,.65),0 1px 3px rgba(63,54,35,.12);clip-path:polygon(3% 0,97% 6%,100% 100%,0 94%)}
+  .note.tape-b::before{background:rgba(222,229,216,.7);transform:translateX(-50%) rotate(2.5deg)}
+  .note.enter{animation:drop .5s cubic-bezier(.2,1.4,.4,1) both}
+  @keyframes drop{0%{opacity:0;transform:rotate(var(--tilt)) translateY(-28px) scale(.92)}100%{opacity:1;transform:rotate(var(--tilt)) translateY(0) scale(1)}}
+  .note.fresh{animation:drop .5s cubic-bezier(.2,1.4,.4,1) both, freshGlow 1.8s ease .2s}
+  @keyframes freshGlow{0%{box-shadow:0 0 0 0 rgba(193,75,52,.4),var(--shadow)}70%{box-shadow:0 0 0 14px rgba(193,75,52,0),var(--shadow)}100%{box-shadow:var(--shadow)}}
+  .note.leaving{opacity:0;transform:rotate(var(--tilt)) scale(.85)}
+  .note.pinned{--tilt:0deg}
+  .pin-mark{display:none;position:absolute;top:-13px;left:50%;transform:translateX(-50%);width:26px;height:26px;z-index:3;filter:drop-shadow(0 2px 2px rgba(63,54,35,.25))}
+  .note.pinned .pin-mark{display:block}
+  .note.pinned::before{display:none}
+  .note-body{font-size:15.5px;white-space:pre-wrap;word-break:break-word;color:var(--ink);line-height:1.8}
+  .note-meta{margin-top:15px;padding-top:11px;border-top:1px dashed var(--line);display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-size:12px;color:var(--ink-soft)}
+  .note-meta .who b{font-weight:700;color:#55604f;letter-spacing:.5px}
+  .note-meta .when{font-variant-numeric:tabular-nums;letter-spacing:.5px}
+  .note-acts{position:absolute;top:9px;right:9px;display:flex;gap:2px}
+  .act{width:30px;height:30px;border:none;background:transparent;border-radius:7px;cursor:pointer;display:grid;place-items:center;color:#a9a590;opacity:.5;transition:all .15s ease}
+  .act svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+  .act:hover{opacity:1;color:var(--ink);background:rgba(39,48,42,.07)}
+  .act.pin-on{opacity:1;color:var(--accent)}
+  .act.reply-on{opacity:1;color:var(--accent)}
+  .act.has-reply{opacity:.8;color:#c58d76}
+  .act.del-arm{opacity:1;color:#fffdf6;background:var(--accent);font-family:var(--sans);font-size:11.5px;font-weight:700;letter-spacing:1px;width:auto;padding:0 10px}
+
+  /* ============ 墙主回复笺（所有人可见） ============ */
+  .note-reply{
+    margin:14px 0 2px;
+    background:rgba(193,75,52,.05);
+    border:1px solid rgba(193,75,52,.16);
+    border-left:3px solid var(--accent);
+    border-radius:0 9px 9px 0;
+    padding:11px 13px 10px;
+    animation:replyIn .4s ease both;
+  }
+  @keyframes replyIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+  .reply-tag{display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:2px;color:var(--accent);font-weight:700;margin-bottom:6px}
+  .reply-seal{width:20px;height:20px;flex:0 0 auto;background:var(--accent);color:#fffdf6;border-radius:4px;display:grid;place-items:center;font-family:var(--serif);font-size:12px;font-weight:900;transform:rotate(-4deg)}
+  .reply-label{flex:1}
+  .reply-when{font-weight:400;color:#bd8f7c;font-variant-numeric:tabular-nums;letter-spacing:.5px;font-size:11px}
+  .reply-body{font-size:14px;color:#6b3a2c;white-space:pre-wrap;word-break:break-word;line-height:1.7}
+
+  /* ============ 回复编辑表单（仅管理员可见） ============ */
+  .reply-form{margin-top:14px;border:1px dashed rgba(193,75,52,.38);border-radius:9px;padding:11px 13px 12px;background:rgba(193,75,52,.035)}
+  .reply-input{width:100%;min-height:76px;resize:vertical;font-family:var(--sans);font-size:14px;color:var(--ink);line-height:1.7;background:transparent;border:none;outline:none;padding:2px}
+  .reply-form-foot{display:flex;gap:8px;margin-top:9px;flex-wrap:wrap}
+  .rf-btn{font-family:var(--sans);font-size:12px;font-weight:500;letter-spacing:2px;border-radius:6px;padding:7px 15px;cursor:pointer;border:1px solid #d9cfb4;background:transparent;color:var(--ink);transition:all .15s}
+  .rf-btn:hover{border-color:var(--ink)}
+  .rf-send{background:var(--accent);border-color:var(--accent);color:#fffdf6}
+  .rf-send:hover{background:var(--accent-deep);border-color:var(--accent-deep)}
+  .rf-remove{color:var(--accent);border-color:rgba(193,75,52,.4)}
+  .rf-remove:hover{background:rgba(193,75,52,.06);border-color:var(--accent)}
+
+  .empty,.state-box{column-span:all;border:1.5px dashed #d4c8a7;border-radius:14px;padding:66px 20px;text-align:center;color:var(--ink-soft);position:relative;overflow:hidden}
+  .empty .ghost-seal{position:absolute;right:26px;top:-14px;font-family:var(--serif);font-weight:900;font-size:120px;color:rgba(39,48,42,.05);line-height:1;user-select:none;pointer-events:none;transform:rotate(6deg)}
+  .empty svg{width:36px;height:36px;stroke:#c0b489;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;margin-bottom:16px;position:relative}
+  .empty p{font-size:16px;letter-spacing:3px;position:relative}
+  .empty small{display:block;margin-top:10px;font-size:12.5px;letter-spacing:1.5px;opacity:.75;position:relative}
+  .state-box p{font-size:14.5px;letter-spacing:2px;line-height:1.9}
+  .state-box .spin{width:26px;height:26px;margin:0 auto 18px;border:2.5px solid #e2d8bd;border-top-color:var(--accent);border-radius:50%;animation:spin .9s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .state-box .retry{margin-top:20px;font-family:var(--sans);font-size:13px;font-weight:500;letter-spacing:3px;color:var(--ink);background:transparent;border:1px solid #cfc4a6;border-radius:8px;padding:10px 28px;cursor:pointer;transition:all .2s}
+  .state-box .retry:hover{border-color:var(--accent);color:var(--accent);background:rgba(193,75,52,.04)}
+
+  footer{margin:0 auto;max-width:1180px;padding:22px 26px 46px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--ink-soft);letter-spacing:1.5px}
+  .conn{display:inline-flex;align-items:center;gap:7px}
+  .conn .dot{width:7px;height:7px;border-radius:50%;background:#b7ae93;flex:0 0 auto;transition:background .3s,box-shadow .3s}
+  .conn.on .dot{background:#5f8f63;box-shadow:0 0 0 3px rgba(95,143,99,.16)}
+  .conn.off .dot{background:var(--accent)}
+  .conn.off{color:var(--accent)}
+  .foot-right{display:inline-flex;align-items:center;gap:18px}
+  .admin-link{font-family:var(--sans);font-size:12px;letter-spacing:1.5px;color:var(--ink-soft);background:none;border:none;cursor:pointer;padding:2px 2px 3px;border-bottom:1px dashed #b0a88d;transition:color .2s,border-color .2s}
+  .admin-link:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  .admin-link.on{color:var(--accent);border-bottom-color:var(--accent)}
+
+  .toast{position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(16px);background:var(--ink);color:#f6f2e7;font-family:var(--sans);font-size:13.5px;letter-spacing:1.5px;padding:12px 24px;border-radius:9px;box-shadow:0 8px 24px rgba(39,48,42,.3);opacity:0;pointer-events:none;z-index:70;transition:all .3s cubic-bezier(.2,1,.3,1);max-width:86vw;text-align:center}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .toast i{font-style:normal;color:#e8b6a8;margin-right:8px}
+
+  /* 管理员口令弹窗 */
+  .modal-mask{position:fixed;inset:0;background:rgba(39,48,42,.4);backdrop-filter:blur(2px);display:grid;place-items:center;z-index:60;opacity:0;pointer-events:none;transition:opacity .25s;padding:20px}
+  .modal-mask.show{opacity:1;pointer-events:auto}
+  .modal{background:var(--card);border-radius:14px;box-shadow:0 20px 60px rgba(39,48,42,.3);max-width:360px;width:100%;padding:30px 28px 24px;transform:translateY(14px) scale(.96);transition:transform .25s cubic-bezier(.2,1,.3,1);text-align:center}
+  .modal-mask.show .modal{transform:none}
+  .modal h3{font-family:var(--serif);font-size:18px;letter-spacing:3px;font-weight:900}
+  .modal h3 span{color:var(--accent)}
+  .modal p{margin:12px 0 4px;font-size:13px;color:var(--ink-soft);line-height:1.8}
+  .admin-input{width:100%;font-family:var(--sans);font-size:15px;color:var(--ink);border:1px solid #d9cfb4;border-radius:8px;padding:11px 14px;outline:none;margin:14px 0 20px;text-align:center;letter-spacing:2px;transition:border-color .2s,box-shadow .2s}
+  .admin-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(193,75,52,.12)}
+  .modal-btns{display:flex;gap:12px;justify-content:center}
+  .modal-btns button{font-family:var(--sans);font-size:14px;font-weight:500;letter-spacing:3px;border-radius:8px;padding:10px 26px;cursor:pointer;border:1px solid #d8cebb;background:transparent;color:var(--ink);transition:all .18s}
+  .modal-btns .yes{background:var(--accent);border-color:var(--accent);color:#fffdf6}
+  .modal-btns .yes:hover{background:var(--accent-deep)}
+  .modal-btns .no:hover{border-color:var(--ink)}
+
+  @media (max-width:900px){.wall{columns:2}}
+  @media (max-width:620px){
+    .wall{columns:1}
+    .title h1{font-size:31px;letter-spacing:9px;text-indent:9px}
+    .seal{width:54px;height:54px;font-size:31px}
+    .composer{padding:22px 20px 20px}
+    .hero{padding:44px 16px 34px}
+    .note{--tilt:calc(var(--tilt-raw,0deg) * .5)}
+    .act{opacity:.7}
+    .submit-btn{width:100%;justify-content:center}
+    .composer-foot{flex-direction:column;align-items:stretch}
+    .composer-foot .count{text-align:center}
+    .wall-wrap{padding:20px 16px 50px}
+  }
+</style>
+</head>
+<body>
+<div class="side-mark" aria-hidden="true">落笔生花</div>
+
+<div class="page">
+
+  <section class="hero">
+    <span class="ghost-seal" aria-hidden="true">留</span>
+
+    <div class="brand">
+      <div class="seal" aria-hidden="true">留</div>
+      <div class="title">
+        <h1>艾<em>言</em></h1>
+        <p class="sub">艾言落笔妙生花 · 众人书写一路发</p>
+      </div>
+    </div>
+
+    <section class="composer">
+      <div class="composer-label">写点什么</div>
+      <div class="field-name">
+        <label for="nameInput">落款（可留空，则为匿名）</label>
+        <input id="nameInput" type="text" maxlength="12" placeholder="你的名字" autocomplete="off">
+      </div>
+      <div class="field-text">
+        <label for="textInput">留言 · 至多三百字</label>
+        <textarea id="textInput" maxlength="300" placeholder="字落在纸上，便有了心与心交流的机会……"></textarea>
+      </div>
+      <div class="composer-foot">
+        <span class="count" id="count">0 / 300</span>
+        <button class="submit-btn" id="submitBtn" disabled>
+          <svg viewBox="0 0 24 24"><path d="M3 21l3.5-1L20 6.5a2 2 0 0 0-2.8-2.8L4 17.5 3 21zM14 6l4 4"/></svg><span id="submitLabel">贴上便签</span>
+        </button>
+      </div>
+    </section>
+
+    <p class="hero-stat" id="heroStat">墙上已有 <i>0</i> 张便签</p>
+
+    <button class="down-hint" id="downHint">
+      下滑 · 查看留言墙
+      <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+  </section>
+
+  <main class="wall-wrap" id="wallWrap">
+    <div class="wall" id="wall">
+      <div class="wall-sec-title" id="wallTitle">留言墙</div>
+    </div>
+  </main>
+
+  <footer>
+    <span class="conn load" id="connState"><i class="dot"></i><span id="connText">连接服务器中…</span></span>
+    <span class="foot-right">
+      <span>Ctrl / ⌘ + Enter 快速发布</span>
+      <button class="admin-link" id="adminLink" title="管理员验证">管理</button>
+    </span>
+  </footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="modal-mask" id="adminMask">
+  <div class="modal">
+    <h3>管理员<span>验证</span></h3>
+    <p>验证通过后可回复、钉取、撕掉便签，清空留言墙。<br>口令仅存于当前标签页，关闭即退出。</p>
+    <input class="admin-input" id="adminKeyInput" type="password" maxlength="64" placeholder="管理口令" autocomplete="off">
+    <div class="modal-btns">
+      <button class="no" id="adminNo">取消</button>
+      <button class="yes" id="adminOk">验证</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  var API = 'api.php';
+
+  var $ = function(id){ return document.getElementById(id); };
+  var wall = $('wall');
+
+  var notes = [];
+  var firstPaint = true;
+  var knownIds = null;    /* 已见过的留言 id，用于识别新留言 */
+  var busyFlag = false;
+  var busyIds = {};
+
+  /* ============ 管理员（唯一权限来源） ============ */
+  var ADMIN_STORE = 'zhijian_admin';   /* sessionStorage：关标签页即失效 */
+  var adminKey = '';
+  try { adminKey = sessionStorage.getItem(ADMIN_STORE) || ''; } catch(e){}
+  function isAdmin(){ return adminKey !== ''; }
+  function refreshAdminUI(){
+    var link = $('adminLink');
+    link.textContent = adminKey ? '退出管理' : '管理';
+    link.classList.toggle('on', !!adminKey);
+  }
+
+  /* ---------- 基础工具 ---------- */
+  function valid(n){
+    return n && typeof n.id === 'string' && typeof n.text === 'string' && typeof n.ts === 'number';
+  }
+  function findNote(id){
+    for (var i = 0; i < notes.length; i++) if (notes[i].id === id) return notes[i];
+    return null;
+  }
+  function esc(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+  function hashOf(id){
+    var h = 0;
+    for (var i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) | 0;
+    return Math.abs(h);
+  }
+  function tiltOf(id){ return ((hashOf(id) % 100) / 100 * 5 - 2.5).toFixed(2) + 'deg'; }
+  function relTime(ts){
+    var d = Date.now() - ts;
+    if (d < 60e3) return '刚刚';
+    if (d < 3600e3) return Math.floor(d / 60e3) + ' 分钟前';
+    if (d < 86400e3) return Math.floor(d / 3600e3) + ' 小时前';
+    if (d < 30 * 86400e3) return Math.floor(d / 86400e3) + ' 天前';
+    return absTime(ts);
+  }
+  function absTime(ts){
+    var t = new Date(ts), p = function(n){ return n < 10 ? '0' + n : n; };
+    return t.getFullYear() + '-' + p(t.getMonth()+1) + '-' + p(t.getDate()) + ' ' + p(t.getHours()) + ':' + p(t.getMinutes());
+  }
+  var toastTimer = null;
+  function toast(msg){
+    var t = $('toast');
+    t.innerHTML = '<i>●</i>' + esc(msg);
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2400);
+  }
+  function shake(el){
+    el.classList.add('shake');
+    setTimeout(function(){ el.classList.remove('shake'); }, 450);
+  }
+  function setConn(state){
+    $('connState').className = 'conn ' + state;
+    $('connText').textContent =
+      state === 'on'  ? '已连接 · 数据存于服务器文件' :
+      state === 'off' ? '无法连接服务器' : '连接服务器中…';
+  }
+
+  /* ---------- 请求封装 ---------- */
+  function parseJSON(r){
+    return r.json().catch(function(){ return {}; }).then(function(j){
+      if (!r.ok || j.ok === false) throw new Error(j.error || ('请求失败（HTTP ' + r.status + '）'));
+      setConn('on');
+      return j;
+    });
+  }
+  function networkFail(){
+    setConn('off');
+    throw new Error('无法连接服务器：请确认 api.php 已上传且可访问');
+  }
+  function getNotes(){ return fetch(API).then(parseJSON, networkFail); }
+  function api(action, body){
+    var payload = { action: action };
+    if (body) for (var k in body) payload[k] = body[k];
+    return fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(parseJSON, networkFail);
+  }
+
+  /* ---------- 渲染 ---------- */
+  var ICONS = {
+    pin: '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4.2"/><path d="M12 12.2V21M9.8 5.8l4.4 4.4"/></svg>',
+    reply: '<svg viewBox="0 0 24 24"><path d="M9 10 4 15l5 5"/><path d="M4 15h10a6 6 0 0 0 6-6V6"/></svg>',
+    del: '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>'
+  };
+  var PIN_MARK = '<svg class="pin-mark" viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="4.5" fill="#c14b34" stroke="none"/><rect x="11" y="11" width="2" height="10" rx="1" fill="#8a3020" stroke="none"/><circle cx="12" cy="7.5" r="1.6" fill="#f6f2e7" stroke="none"/></svg>';
+
+  function clearWall(){
+    while (wall.children.length > 1) wall.removeChild(wall.lastChild);
+  }
+  function sorted(){
+    return notes.slice().sort(function(a, b){
+      if (!!b.pinned !== !!a.pinned) return b.pinned ? 1 : -1;
+      return b.ts - a.ts;
+    });
+  }
+  function replyHtmlOf(n){   /* 墙主回复笺：所有人可见 */
+    if (!n.reply) return '';
+    return '<div class="note-reply">' +
+      '<div class="reply-tag">' +
+        '<span class="reply-seal">回</span>' +
+        '<span class="reply-label">墙主回复</span>' +
+        (n.replyTs ? '<span class="reply-when" title="' + absTime(n.replyTs) + '">' + relTime(n.replyTs) + '</span>' : '') +
+      '</div>' +
+      '<div class="reply-body">' + esc(n.reply) + '</div>' +
+    '</div>';
+  }
+  function render(freshIds){
+    var keepY = window.scrollY;
+    clearWall();
+    var list = sorted();
+    if (!list.length){
+      $('wallTitle').textContent = '留言墙';
+      var empty = document.createElement('div');
+      empty.className = 'empty';
+      empty.innerHTML =
+        '<span class="ghost-seal">留</span>' +
+        '<svg viewBox="0 0 24 24"><path d="M4 20l1-5L16.5 3.5a2 2 0 0 1 2.8 2.8L7.5 18 4 20z"/><path d="M14 6l4 4"/></svg>' +
+        '<p>空白的纸页，等你落下第一笔。</p>' +
+        '<small>写好的留言会写进服务器上的存储文件，所有访客可见</small>';
+      wall.appendChild(empty);
+    } else {
+      $('wallTitle').textContent = '留言墙 · ' + list.length + ' 张';
+      list.forEach(function(n, i){
+        var art = document.createElement('article');
+        art.className = 'note' + (n.pinned ? ' pinned' : '') + (hashOf(n.id) % 2 ? ' tape-b' : '');
+        art.dataset.id = n.id;
+        art.style.setProperty('--tilt-raw', tiltOf(n.id));
+        if (firstPaint){
+          art.classList.add('enter');
+          art.style.animationDelay = Math.min(i * 45, 420) + 'ms';
+        } else if (freshIds && freshIds.indexOf(n.id) >= 0){
+          art.classList.add('fresh');
+        }
+        /* 钉 / 回 / 撕按钮：仅管理员模式显示 */
+        var acts = '';
+        if (isAdmin()){
+          acts = '<div class="note-acts">' +
+            '<button class="act pin' + (n.pinned ? ' pin-on' : '') + '" data-act="pin" title="' + (n.pinned ? '取下图钉' : '钉在墙前') + '">' + ICONS.pin + '</button>' +
+            '<button class="act' + (n.reply ? ' has-reply' : '') + '" data-act="reply" title="' + (n.reply ? '回复了 · 点击修改' : '回复这张') + '">' + ICONS.reply + '</button>' +
+            '<button class="act" data-act="del" title="撕掉这张">' + ICONS.del + '</button>' +
+          '</div>';
+        }
+        art.innerHTML =
+          PIN_MARK + acts +
+          '<div class="note-body">' + esc(n.text) + '</div>' +
+          '<div class="note-meta">' +
+            '<span class="who">—— <b>' + esc(n.name || '匿名') + '</b></span>' +
+            '<span class="when" title="' + absTime(n.ts) + '">' + relTime(n.ts) + (n.pinned ? ' · 已钉' : '') + '</span>' +
+          '</div>' +
+          replyHtmlOf(n);
+        wall.appendChild(art);
+      });
+    }
+    firstPaint = false;
+    window.scrollTo(0, keepY);
+    $('heroStat').innerHTML = '墙上已有 <i>' + notes.length + '</i> 张便签';
+    restoreReplyForm();   /* 若管理员正开着回复表单，重绘后原样恢复 */
+    syncReplyBtnState();
+  }
+  function renderLoading(){
+    clearWall();
+    var d = document.createElement('div');
+    d.className = 'state-box';
+    d.innerHTML = '<div class="spin"></div><p>正在翻阅纸页……</p>';
+    wall.appendChild(d);
+  }
+  function renderError(msg){
+    clearWall();
+    var d = document.createElement('div');
+    d.className = 'state-box';
+    d.innerHTML = '<p>' + esc(msg) + '</p><button class="retry" id="retryBtn">重新连接</button>';
+    wall.appendChild(d);
+    $('retryBtn').addEventListener('click', boot);
+  }
+
+  /* ---------- 回复表单（仅管理员） ---------- */
+  var replyDraft = null;   /* {id, text} 正在编辑的回复草稿 */
+  function openReplyForm(art, id, draftText){
+    var forms = wall.querySelectorAll('.reply-form');
+    for (var i = 0; i < forms.length; i++){
+      if (forms[i].parentNode) forms[i].parentNode.removeChild(forms[i]);
+    }
+    var n = findNote(id);
+    var val = (typeof draftText === 'string') ? draftText : ((n && n.reply) ? n.reply : '');
+    var form = document.createElement('div');
+    form.className = 'reply-form';
+    form.innerHTML =
+      '<textarea class="reply-input" maxlength="300" placeholder="以墙主身份回复……（Ctrl / ⌘ + Enter 发布）"></textarea>' +
+      '<div class="reply-form-foot">' +
+        '<button class="rf-btn rf-send" data-act="rf-send">贴上回复</button>' +
+        '<button class="rf-btn rf-cancel" data-act="rf-cancel">收起</button>' +
+        ((n && n.reply) ? '<button class="rf-btn rf-remove" data-act="rf-remove">移除回复</button>' : '') +
+      '</div>';
+    art.appendChild(form);
+    replyDraft = { id: id, text: val };
+    var ta = form.querySelector('.reply-input');
+    if (ta){
+      ta.value = val;
+      ta.focus();
+      try { ta.setSelectionRange(val.length, val.length); } catch(e){}
+    }
+  }
+  function closeReplyForms(){
+    replyDraft = null;
+    var forms = wall.querySelectorAll('.reply-form');
+    for (var i = 0; i < forms.length; i++){
+      if (forms[i].parentNode) forms[i].parentNode.removeChild(forms[i]);
+    }
+    syncReplyBtnState();
+  }
+  function restoreReplyForm(){   /* 整墙重绘后恢复打开中的表单与草稿 */
+    if (!replyDraft || !isAdmin()) { replyDraft = null; return; }
+    var target = wall.querySelector('.note[data-id="' + replyDraft.id + '"]');
+    if (target) openReplyForm(target, replyDraft.id, replyDraft.text);
+    else replyDraft = null;
+  }
+  function syncReplyBtnState(){   /* 回复按钮高亮 = 该便签的表单正开着 */
+    var btns = wall.querySelectorAll('.act[data-act="reply"]');
+    for (var i = 0; i < btns.length; i++){
+      var art = btns[i].closest('.note');
+      btns[i].classList.toggle('reply-on', !!(art && art.querySelector('.reply-form')));
+    }
+  }
+  /* 草稿随输入保存：整墙重绘（轮询同步）也不会丢正在打的字 */
+  wall.addEventListener('input', function(e){
+    if (e.target && e.target.classList && e.target.classList.contains('reply-input') && replyDraft){
+      replyDraft.text = e.target.value;
+    }
+  });
+  wall.addEventListener('keydown', function(e){
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' &&
+        e.target && e.target.classList && e.target.classList.contains('reply-input')){
+      var art = e.target.closest('.note');
+      if (art){
+        var send = art.querySelector('.rf-send');
+        if (send) send.click();
+      }
+    }
+  });
+
+  /* ---------- 与服务器同步 ---------- */
+  function sync(highlightIds){
+    return getNotes().then(function(j){
+      var next = (j.data || []).filter(valid);
+      var fresh = [];
+      if (knownIds !== null){
+        next.forEach(function(n){ if (!knownIds[n.id]) fresh.push(n.id); });
+      }
+      if (highlightIds) fresh = fresh.concat(highlightIds);
+      knownIds = {};
+      next.forEach(function(n){ knownIds[n.id] = true; });
+      var changed = JSON.stringify(next) !== JSON.stringify(notes);
+      notes = next;
+      if (changed || fresh.length) render(fresh);
+    });
+  }
+  function boot(){
+    setConn('load');
+    refreshAdminUI();
+    renderLoading();
+    getNotes().then(function(j){
+      notes = (j.data || []).filter(valid);
+      knownIds = {};
+      notes.forEach(function(n){ knownIds[n.id] = true; });
+      render();
+    }).catch(function(err){
+      renderError(err.message);
+    });
+  }
+
+  /* ---------- 发布（任何人） ---------- */
+  var nameInput = $('nameInput'), textInput = $('textInput'),
+      submitBtn = $('submitBtn'), count = $('count');
+
+  function refreshSubmit(){
+    submitBtn.disabled = busyFlag || textInput.value.trim() === '';
+  }
+  function setBusy(b){
+    busyFlag = b;
+    $('submitLabel').textContent = b ? '正在张贴…' : '贴上便签';
+    refreshSubmit();
+  }
+  textInput.addEventListener('input', function(){
+    var len = textInput.value.length;
+    count.textContent = len + ' / 300';
+    count.classList.toggle('warn', len >= 300);
+    refreshSubmit();
+  });
+  function submit(){
+    var text = textInput.value.trim();
+    if (!text){ shake(submitBtn); return; }
+    setBusy(true);
+    api('add', { name: nameInput.value.trim(), text: text })
+      .then(function(j){
+        textInput.value = '';
+        textInput.dispatchEvent(new Event('input'));
+        toast('便签已写入存储文件');
+        return sync(j.data ? [j.data.id] : null);
+      })
+      .then(function(){
+        $('wallWrap').scrollIntoView({ behavior: 'smooth' });
+      })
+      .catch(function(err){ toast(err.message); })
+      .then(function(){ setBusy(false); });
+  }
+  submitBtn.addEventListener('click', submit);
+  textInput.addEventListener('keydown', function(e){
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && !submitBtn.disabled) submit();
+  });
+
+  /* ---------- 管理员操作：钉 / 撕 / 回复（事件委托，服务端强校验） ---------- */
+  var armTimer = null;
+  function resetDel(btn){
+    btn.classList.remove('del-arm');
+    btn.innerHTML = ICONS.del;
+  }
+  wall.addEventListener('click', function(e){
+    if (!isAdmin()) return;                       /* 这些按钮只有管理员可见，双保险 */
+    var btn = e.target.closest ? e.target.closest('[data-act]') : null;
+    if (!btn) return;
+    var art = btn.closest('.note');
+    if (!art) return;
+    var actName = btn.dataset.act;
+    var id = art.dataset.id;
+
+    if (actName === 'rf-cancel'){ closeReplyForms(); return; }
+
+    var n = findNote(id);
+    if (!n || busyIds[id]) return;
+
+    /* 打开 / 收起回复表单 */
+    if (actName === 'reply'){
+      var existingForm = art.querySelector('.reply-form');
+      if (existingForm){
+        replyDraft = null;
+        art.removeChild(existingForm);
+        syncReplyBtnState();
+      } else {
+        openReplyForm(art, id);
+        syncReplyBtnState();
+      }
+      return;
+    }
+
+    /* 发布回复 */
+    if (actName === 'rf-send'){
+      var ta = art.querySelector('.reply-input');
+      var text = ta ? ta.value.trim() : '';
+      if (!text){ toast('回复不能为空'); return; }
+      busyIds[id] = true;
+      api('reply', { id: id, text: text, token: adminKey })
+        .then(function(){ replyDraft = null; return sync(); })
+        .then(function(){ toast('已贴上回复'); })
+        .catch(function(err){ toast(err.message); })
+        .then(function(){ delete busyIds[id]; });
+      return;
+    }
+
+    /* 移除回复 */
+    if (actName === 'rf-remove'){
+      busyIds[id] = true;
+      api('reply', { id: id, text: '', token: adminKey })
+        .then(function(){ replyDraft = null; return sync(); })
+        .then(function(){ toast('已移除回复'); })
+        .catch(function(err){ toast(err.message); })
+        .then(function(){ delete busyIds[id]; });
+      return;
+    }
+
+    /* 置顶 / 取钉 */
+    if (actName === 'pin'){
+      busyIds[id] = true;
+      var target = !n.pinned;
+      api('pin', { id: id, pinned: target, token: adminKey })
+        .then(function(){ return sync(); })
+        .then(function(){ toast(target ? '已钉在墙前' : '已取下图钉'); })
+        .catch(function(err){ toast(err.message); })
+        .then(function(){ delete busyIds[id]; });
+      return;
+    }
+
+    /* 删除（两段式确认） */
+    if (actName === 'del'){
+      if (btn.classList.contains('del-arm')){
+        clearTimeout(armTimer);
+        busyIds[id] = true;
+        art.classList.add('leaving');
+        api('del', { id: id, token: adminKey })
+          .then(function(){ return sync(); })
+          .then(function(){ toast('已撕掉一张便签'); })
+          .catch(function(err){
+            art.classList.remove('leaving');
+            resetDel(btn);
+            toast(err.message);
+          })
+          .then(function(){ delete busyIds[id]; });
+      } else {
+        btn.classList.add('del-arm');
+        btn.textContent = '撕掉？';
+        clearTimeout(armTimer);
+        armTimer = setTimeout(function(){ resetDel(btn); }, 2600);
+      }
+    }
+  });
+
+  /* ---------- 管理员登录 / 退出 ---------- */
+  var adminMask = $('adminMask'), adminInput = $('adminKeyInput');
+  $('adminLink').addEventListener('click', function(){
+    if (isAdmin()){                           /* 退出管理员 */
+      adminKey = '';
+      try { sessionStorage.removeItem(ADMIN_STORE); } catch(e){}
+      closeReplyForms();
+      refreshAdminUI();
+      render();
+      toast('已退出管理员模式');
+    } else {
+      adminMask.classList.add('show');
+      setTimeout(function(){ try { adminInput.focus(); } catch(e){} }, 150);
+    }
+  });
+  function closeAdmin(){ adminMask.classList.remove('show'); adminInput.value = ''; }
+  $('adminNo').addEventListener('click', closeAdmin);
+  adminMask.addEventListener('click', function(e){
+    if (e.target === adminMask) closeAdmin();
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape'){
+      if (adminMask.classList.contains('show')) closeAdmin();
+      else closeReplyForms();                 /* ESC 收起回复表单 */
+    }
+  });
+  adminInput.addEventListener('keydown', function(e){
+    if (e.key === 'Enter') $('adminOk').click();
+  });
+  $('adminOk').addEventListener('click', function(){
+    var val = adminInput.value.trim();
+    if (!val){ shake(this); return; }
+    api('auth', { token: val })
+      .then(function(j){
+        if (j.data && j.data.admin){
+          adminKey = val;
+          try { sessionStorage.setItem(ADMIN_STORE, val); } catch(e){}
+          closeAdmin();
+          refreshAdminUI();
+          render();                           /* 重绘以显示操作按钮 */
+          toast('管理员模式已开启');
+        } else {
+          toast('口令不正确');
+        }
+      })
+      .catch(function(err){ toast(err.message); });
+  });
+
+  /* ---------- 其他 ---------- */
+  $('downHint').addEventListener('click', function(){
+    $('wallWrap').scrollIntoView({ behavior: 'smooth' });
+  });
+
+  /* ---------- 启动 / 轮询 / 时间刷新 ---------- */
+  boot();
+  setInterval(function(){
+    if (document.visibilityState === 'visible') sync().catch(function(){});
+  }, 15000);
+  document.addEventListener('visibilitychange', function(){
+    if (document.visibilityState === 'visible') sync().catch(function(){});
+  });
+  setInterval(function(){
+    var els = wall.querySelectorAll('.note');
+    for (var i = 0; i < els.length; i++){
+      var n = findNote(els[i].dataset.id);
+      var w = els[i].querySelector('.when');
+      if (n && w) w.textContent = relTime(n.ts) + (n.pinned ? ' · 已钉' : '');
+      var r = els[i].querySelector('.reply-when');
+      if (n && n.replyTs && r) r.textContent = relTime(n.replyTs);
+    }
+  }, 45000);
+})();
+</script>
+</body>
+</html>
